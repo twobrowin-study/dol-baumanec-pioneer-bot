@@ -13,10 +13,10 @@ from groups import Groups
 
 from datetime import datetime
 
-NAME_QUESTION = 'Фамилия Имя Отчество - это БАЗА'
-BIRTH_QUESTION = 'Дата рождения'
-GROUP_QUESTION = 'Учебная группа (Например: МТ2-11Б)'
-PHONE_QUESTION = 'Номер телефона'
+NAME_QUESTION = 'Фамилия Имя Отчество *(это БАЗА)*'
+BIRTH_QUESTION = 'Дата рождения _(пример: 01.01.2001)_'
+GROUP_QUESTION = 'Учебная группа _(пример: МТ2-11Б)_'
+PHONE_QUESTION = 'Номер телефона _(пример: +79017495904)_'
 EXPECTIONS_QUESTION = 'Что ожидаешь от выезда???'
 
 ACTIVE = 'Запись активна? (Пользователь может убрать подтверждение заранее)'
