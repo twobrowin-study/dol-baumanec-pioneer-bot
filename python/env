@@ -1,0 +1,13 @@
+BOT_TOKEN=''
+
+SHEETS_ACC_JSON=''
+
+SHEETS_NAME='Регистрация (Ответы)'
+SHEET_ANSWERS='Ответы на форму (1)'
+SHEET_GROUPS='Группа для отчётов'
+SHEET_COMMANDS='Команды бота'
+SHEET_NOTIFICATIONS='Оповещения пользователей по дате и времени'
+SHEET_EXPECTIONS='Варианты ответов на последний вопрос'
+
+SHEET_UPDATE_TIMEOUT='90'
+NOTIFICATIONS_TIMEOUT='5'
