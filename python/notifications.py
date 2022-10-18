@@ -61,7 +61,7 @@ class NotificationsClass(AbstractSheetAdapter):
                                 [InlineKeyboardButton(text=NO_TEXT, callback_data = NO_CALLBACK)],
                             ]) if row['Сбор данных в колонку подтверждения?'] == 'Да' else None
                         )
-                    group_message = "Следующее сообщение было разослано только что всем учасникам"
+                    group_message = "Следующее сообщение было разослано только что всем участникам"
                     for group_id in Groups.get_all_groups():
                         await app.bot.send_message(group_id, group_message, parse_mode = ParseMode.MARKDOWN)
                         await app.bot.send_message(group_id, message, parse_mode = ParseMode.MARKDOWN)
