@@ -46,31 +46,28 @@ class NotificationsClass(AbstractSheetAdapter):
         ]
     
     async def send_notifications(self, app: Application):
-        while True:
-            await asyncio.sleep(NotificationsTimeout)
-            try:
-                Log.info("Check for nottifications")
-                for _,row in self._get_notifications_to_send().iterrows():
-                    Log.info("Send notification")
-                    Log.debug(row)
-                    message = row['Сообщения, которые надо разослать']
-                    for chat_id in Answers.get_all_fully_registered_active_user_ids():
-                        await app.bot.send_message(chat_id, message, parse_mode = ParseMode.MARKDOWN,
-                            reply_markup = InlineKeyboardMarkup([
-                                [InlineKeyboardButton(text=YES_TEXT, callback_data = YES_CALLBACK)],
-                                [InlineKeyboardButton(text=NO_TEXT, callback_data = NO_CALLBACK)],
-                            ]) if row['Сбор данных в колонку подтверждения?'] == 'Да' else None
-                        )
-                    group_message = "Следующее сообщение было разослано только что всем участникам"
-                    for group_id in Groups.get_all_groups():
-                        await app.bot.send_message(group_id, group_message, parse_mode = ParseMode.MARKDOWN)
-                        await app.bot.send_message(group_id, message, parse_mode = ParseMode.MARKDOWN)
-                    
-                    self.valid.loc[self.valid['Сообщения, которые надо разослать'] == message, 'Отправлено?'] = 'Да'
-                    wks_row = self.wks.find(message).row
-                    wks_col = self.wks.find('Отправлено?').col
-                    self.wks.update_cell(wks_row, wks_col, 'Да')
-            except Exception as e:
-                Log.warn(f"Got an exeption while sending notification {self.name} df", e)
+        await asyncio.sleep(NotificationsTimeout)
+        app.create_task(self.send_notifications(app))
+        Log.info("Check for nottifications")
+        for _,row in self._get_notifications_to_send().iterrows():
+            Log.info("Send notification")
+            Log.debug(row)
+            message = row['Сообщения, которые надо разослать']
+            for chat_id in Answers.get_all_fully_registered_active_user_ids():
+                await app.bot.send_message(chat_id, message, parse_mode = ParseMode.MARKDOWN,
+                    reply_markup = InlineKeyboardMarkup([
+                        [InlineKeyboardButton(text=YES_TEXT, callback_data = YES_CALLBACK)],
+                        [InlineKeyboardButton(text=NO_TEXT, callback_data = NO_CALLBACK)],
+                    ]) if row['Сбор данных в колонку подтверждения?'] == 'Да' else None
+                )
+            group_message = "Следующее сообщение было разослано только что всем участникам"
+            for group_id in Groups.get_all_groups():
+                await app.bot.send_message(group_id, group_message, parse_mode = ParseMode.MARKDOWN)
+                await app.bot.send_message(group_id, message, parse_mode = ParseMode.MARKDOWN)
+            
+            self.valid.loc[self.valid['Сообщения, которые надо разослать'] == message, 'Отправлено?'] = 'Да'
+            wks_row = self.wks.find(message).row
+            wks_col = self.wks.find('Отправлено?').col
+            self.wks.update_cell(wks_row, wks_col, 'Да')
 
 Notifications = NotificationsClass(SheetNotifications, 'notifications')

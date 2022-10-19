@@ -7,7 +7,7 @@
     - name: Run dol baumanec pioneer bot bot docker container
       docker_container:
         name: dol-baumanec-pioneer-bot
-        image: twobrowin/dol-baumanec-pioneer-bot:1.1.5
+        image: twobrowin/dol-baumanec-pioneer-bot:1.2.1
         state: started
         detach: yes
         restart: yes

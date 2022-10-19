@@ -46,11 +46,11 @@ from commands import COMMAND_REGISTER
 
 async def post_init(application: Application) -> None:
     await app.bot.set_my_commands(Commands.get_commands_descriptions())
-    application.create_task(Commands.update())
-    application.create_task(Answers.update())
-    application.create_task(Groups.update())
-    application.create_task(Expections.update())
-    application.create_task(Notifications.update())
+    application.create_task(Commands.update(application))
+    application.create_task(Answers.update(application))
+    application.create_task(Groups.update(application))
+    application.create_task(Expections.update(application))
+    application.create_task(Notifications.update(application))
     application.create_task(Notifications.send_notifications(application))
 
 if __name__ == '__main__':
