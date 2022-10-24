@@ -12,6 +12,7 @@ COMMAND_GETINFO = 'getinfo'
 COMMAND_UNREGISTER = 'unregister'
 COMMAND_REREGISTER = 'reregister'
 COMMAND_REGISTER = 'register'
+COMMAND_ALL_SONGS = 'songs_end'
 
 class CommandsClass(AbstractSheetAdapter):
     def _get_df(self) -> pd.DataFrame:

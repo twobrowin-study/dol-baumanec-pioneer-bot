@@ -8,6 +8,9 @@ from answers import BIRTH_QUESTION
 from answers import GROUP_QUESTION
 from answers import PHONE_QUESTION
 from answers import EXPECTIONS_QUESTION
+from answers import SONG_QUESTION_1
+from answers import SONG_QUESTION_2
+from answers import SONG_QUESTION_3
 
 class PrivateChatClass(MessageFilter):
     def filter(self, message: Message) -> bool:
@@ -48,6 +51,21 @@ class UserShouldWriteExpectionsClass(MessageFilter):
     def filter(self, message: Message) -> bool:
         return Answers.check_user_should_write_question(message.chat_id, EXPECTIONS_QUESTION)
 UserShouldWriteExpectionsFilter = UserShouldWriteExpectionsClass()
+
+class UserShouldWriteSong1Class(MessageFilter):
+    def filter(self, message: Message) -> bool:
+        return Answers.check_user_should_write_question(message.chat_id, SONG_QUESTION_1)
+UserShouldWriteSong1Filter = UserShouldWriteSong1Class()
+
+class UserShouldWriteSong2Class(MessageFilter):
+    def filter(self, message: Message) -> bool:
+        return Answers.check_user_should_write_question(message.chat_id, SONG_QUESTION_2)
+UserShouldWriteSong2Filter = UserShouldWriteSong2Class()
+
+class UserShouldWriteSong3Class(MessageFilter):
+    def filter(self, message: Message) -> bool:
+        return Answers.check_user_should_write_question(message.chat_id, SONG_QUESTION_3)
+UserShouldWriteSong3Filter = UserShouldWriteSong3Class()
 
 class UserHasCallbackStatusClass(MessageFilter):
     def filter(self, message: Message) -> bool:

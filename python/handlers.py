@@ -12,12 +12,16 @@ from commands import COMMAND_GETINFO
 from commands import COMMAND_UNREGISTER
 from commands import COMMAND_REREGISTER
 from commands import COMMAND_REGISTER
+from commands import COMMAND_ALL_SONGS
 
 from answers import NAME_QUESTION
 from answers import BIRTH_QUESTION
 from answers import GROUP_QUESTION
 from answers import PHONE_QUESTION
 from answers import EXPECTIONS_QUESTION
+from answers import SONG_QUESTION_1
+from answers import SONG_QUESTION_2
+from answers import SONG_QUESTION_3
 from answers import ACTIVE
 from answers import CONFIRM
 
@@ -61,8 +65,21 @@ async def PhoneHandler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
 async def ExpectionsHandler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_markdown(Commands.get_responce_to_command(COMMAND_END), reply_markup=ReplyKeyboardRemove())
+    await update.message.reply_markdown(SONG_QUESTION_1)
     Answers.write_answer(EXPECTIONS_QUESTION, update.effective_chat.id, update.message.text, context.application)
     Answers.registration_complete(update.effective_chat.id, context.application)
+
+async def Song1Handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_markdown(SONG_QUESTION_2)
+    Answers.write_answer(SONG_QUESTION_1, update.effective_chat.id, update.message.text, context.application)
+
+async def Song2Handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_markdown(SONG_QUESTION_3)
+    Answers.write_answer(SONG_QUESTION_2, update.effective_chat.id, update.message.text, context.application)
+
+async def Song3Handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_markdown(Commands.get_responce_to_command(COMMAND_ALL_SONGS))
+    Answers.write_answer(SONG_QUESTION_3, update.effective_chat.id, update.message.text, context.application)
 
 async def GetInfoHandler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_markdown(Commands.get_responce_to_command(COMMAND_GETINFO))

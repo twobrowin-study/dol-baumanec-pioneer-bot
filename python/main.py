@@ -17,6 +17,9 @@ from handlers import GetInfoHandler
 from handlers import UnregisterHandler
 from handlers import ReregisterHandler
 from handlers import RegisterHandler
+from handlers import Song1Handler
+from handlers import Song2Handler
+from handlers import Song3Handler
 from handlers import RegisterCallbackHandler
 from handlers import AfterRegisterCallbackHandler
 from handlers import NotificationsCallbackHandler
@@ -30,6 +33,9 @@ from filters import UserShouldWriteGroupFilter
 from filters import UserShouldWritePhoneFilter
 from filters import UserShouldWriteExpectionsFilter
 from filters import UserHasCallbackStatusFilter
+from filters import UserShouldWriteSong1Filter
+from filters import UserShouldWriteSong2Filter
+from filters import UserShouldWriteSong3Filter
 
 from commands import Commands
 from answers import Answers
@@ -76,6 +82,10 @@ if __name__ == '__main__':
 
     app.add_handler(CallbackQueryHandler(RegisterCallbackHandler, pattern='register_[a-z]+'))
     app.add_handler(MessageHandler(UserIsRegisteredFilter & UserHasCallbackStatusFilter, AfterRegisterCallbackHandler))
+
+    app.add_handler(MessageHandler(UserIsRegisteredFilter & UserShouldWriteSong1Filter, Song1Handler))
+    app.add_handler(MessageHandler(UserIsRegisteredFilter & UserShouldWriteSong2Filter, Song2Handler))
+    app.add_handler(MessageHandler(UserIsRegisteredFilter & UserShouldWriteSong3Filter, Song3Handler))
 
     app.add_handler(CallbackQueryHandler(NotificationsCallbackHandler, pattern='notifications_[a-z]+'))
 
