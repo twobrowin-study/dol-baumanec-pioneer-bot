@@ -54,12 +54,15 @@ class NotificationsClass(AbstractSheetAdapter):
             Log.debug(row)
             message = row['Сообщения, которые надо разослать']
             for chat_id in Answers.get_all_fully_registered_active_user_ids():
-                await app.bot.send_message(chat_id, message, parse_mode = ParseMode.MARKDOWN, disable_web_page_preview=True,
-                    reply_markup = InlineKeyboardMarkup([
-                        [InlineKeyboardButton(text=YES_TEXT, callback_data = YES_CALLBACK)],
-                        [InlineKeyboardButton(text=NO_TEXT, callback_data = NO_CALLBACK)],
-                    ]) if row['Сбор данных в колонку подтверждения?'] == 'Да' else None
-                )
+                try:
+                    await app.bot.send_message(chat_id, message, parse_mode = ParseMode.MARKDOWN, disable_web_page_preview=True,
+                        reply_markup = InlineKeyboardMarkup([
+                            [InlineKeyboardButton(text=YES_TEXT, callback_data = YES_CALLBACK)],
+                            [InlineKeyboardButton(text=NO_TEXT, callback_data = NO_CALLBACK)],
+                        ]) if row['Сбор данных в колонку подтверждения?'] == 'Да' else None
+                    )
+                except Exception as e:
+                    Log.debug("Got an exception")
             group_message = "Следующее сообщение было разослано только что всем участникам"
             for group_id in Groups.get_all_groups():
                 await app.bot.send_message(group_id, group_message, parse_mode = ParseMode.MARKDOWN, disable_web_page_preview=True)
