@@ -13,7 +13,12 @@ from log import Log
 from answers import Answers
 from groups import Groups
 
+from answers import FEEDBACK_CALLBACK 
+
 from datetime import datetime
+
+from telegram import PhotoSize
+import json
 
 YES_TEXT = 'Да'
 NO_TEXT = 'Нет'
@@ -30,7 +35,9 @@ class NotificationsClass(AbstractSheetAdapter):
             (full_df['Дата и время'] != '') &
             (full_df['Сбор данных в колонку подтверждения?'] != '') &
             (full_df['Активно?'] != '') &
-            (full_df['Отправлено?'] != '')
+            (full_df['Отправлено?'] != '') &
+            (full_df['ОтветОЧКА?'] != '') &
+            (full_df['Фото'] != '')
         ]
         return valid
     
@@ -53,20 +60,40 @@ class NotificationsClass(AbstractSheetAdapter):
             Log.info("Send notification")
             Log.debug(row)
             message = row['Сообщения, которые надо разослать']
+
+            has_photo = False
+            if row['Фото'] != '' and row['Фото'] != None:
+                has_photo = True
+                json_tmp = json.loads(row['Фото'])
+                photo_obj = PhotoSize.de_json(json_tmp, app.bot)
+
             for chat_id in Answers.get_all_fully_registered_active_user_ids():
                 try:
-                    await app.bot.send_message(chat_id, message, parse_mode = ParseMode.MARKDOWN, disable_web_page_preview=True,
-                        reply_markup = InlineKeyboardMarkup([
-                            [InlineKeyboardButton(text=YES_TEXT, callback_data = YES_CALLBACK)],
-                            [InlineKeyboardButton(text=NO_TEXT, callback_data = NO_CALLBACK)],
-                        ]) if row['Сбор данных в колонку подтверждения?'] == 'Да' else None
-                    )
+                    if has_photo == False:
+                        await app.bot.send_message(chat_id, message, parse_mode = ParseMode.MARKDOWN, disable_web_page_preview=True,
+                            reply_markup = InlineKeyboardMarkup([
+                                [InlineKeyboardButton(text=YES_TEXT, callback_data = YES_CALLBACK)],
+                                [InlineKeyboardButton(text=NO_TEXT, callback_data = NO_CALLBACK)],
+                            ]) if row['Сбор данных в колонку подтверждения?'] == 'Да' else None
+                        )
+                    else:
+                        await app.bot.send_photo(chat_id, photo_obj, caption = message, parse_mode = ParseMode.MARKDOWN,
+                            reply_markup = InlineKeyboardMarkup([
+                                [InlineKeyboardButton(text=YES_TEXT, callback_data = YES_CALLBACK)],
+                                [InlineKeyboardButton(text=NO_TEXT, callback_data = NO_CALLBACK)],
+                            ]) if row['Сбор данных в колонку подтверждения?'] == 'Да' else None
+                        )
+                    if row['ОтветОЧКА?'] == 'Да':
+                        Answers.set_user_status_after_callback(chat_id, FEEDBACK_CALLBACK)
                 except Exception as e:
                     Log.debug("Got an exception")
             group_message = "Следующее сообщение было разослано только что всем участникам"
             for group_id in Groups.get_all_groups():
                 await app.bot.send_message(group_id, group_message, parse_mode = ParseMode.MARKDOWN, disable_web_page_preview=True)
-                await app.bot.send_message(group_id, message, parse_mode = ParseMode.MARKDOWN, disable_web_page_preview=True)
+                if has_photo == False:
+                    await app.bot.send_message(group_id, message, parse_mode = ParseMode.MARKDOWN, disable_web_page_preview=True)
+                else:
+                    await app.bot.send_photo(group_id, photo_obj, caption = message, parse_mode = ParseMode.MARKDOWN)
             
             self.valid.loc[self.valid['Сообщения, которые надо разослать'] == message, 'Отправлено?'] = 'Да'
             wks_row = self.wks.find(message).row

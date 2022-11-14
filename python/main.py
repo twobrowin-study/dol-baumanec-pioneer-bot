@@ -23,6 +23,7 @@ from handlers import Song3Handler
 from handlers import RegisterCallbackHandler
 from handlers import AfterRegisterCallbackHandler
 from handlers import NotificationsCallbackHandler
+from handlers import PhotoHandler
 
 from filters import PrivateChatFilter
 from filters import UserNotRegisteredFilter
@@ -36,6 +37,7 @@ from filters import UserHasCallbackStatusFilter
 from filters import UserShouldWriteSong1Filter
 from filters import UserShouldWriteSong2Filter
 from filters import UserShouldWriteSong3Filter
+from filters import HasPhotoFilter
 
 from commands import Commands
 from answers import Answers
@@ -88,6 +90,8 @@ if __name__ == '__main__':
     app.add_handler(MessageHandler(UserIsRegisteredFilter & UserShouldWriteSong3Filter, Song3Handler))
 
     app.add_handler(CallbackQueryHandler(NotificationsCallbackHandler, pattern='notifications_[a-z]+'))
+
+    app.add_handler(MessageHandler(PrivateChatFilter & HasPhotoFilter, PhotoHandler))
 
     app.run_polling()
     Log.info("Done. Goodby!")

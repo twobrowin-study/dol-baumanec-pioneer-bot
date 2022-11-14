@@ -17,6 +17,11 @@ class PrivateChatClass(MessageFilter):
         return message.chat.type == 'private'
 PrivateChatFilter = PrivateChatClass()
 
+class HasPhotoClass(MessageFilter):
+    def filter(self, message: Message) -> bool:
+        return message.photo != []
+HasPhotoFilter = HasPhotoClass()
+
 class UserNotRegisteredClass(MessageFilter):
     def filter(self, message: Message) -> bool:
         return Answers.check_user_not_registered(message.chat_id)

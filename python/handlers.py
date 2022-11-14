@@ -35,6 +35,10 @@ from log import Log
 async def ChatJoinHandler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     print(f"I've join chat {update.effective_chat.id}")
 
+async def PhotoHandler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    print(f"Got photo:")
+    print(f"{update.message.photo[-1].to_json()}")
+
 async def HelpHandler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_markdown(Commands.get_responce_to_command(COMMAND_HELP), disable_web_page_preview=True)
 

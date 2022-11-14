@@ -24,6 +24,7 @@ SONG_QUESTION_3 = 'И третью'
 
 ACTIVE = 'Запись активна? (Пользователь может убрать подтверждение заранее)'
 CONFIRM = 'Подтверждающая отметочка (какого-то числа отправим сообщение)'
+FEEDBACK = 'ОтветОЧКА'
 
 NAME_CALLBACK   = 'register_name'
 BIRTH_CALLBACK  = 'register_birth'
@@ -32,6 +33,7 @@ PHONE_CALLBACK  = 'register_phone'
 SONG_CALLBACK_1 = 'register_song_1'
 SONG_CALLBACK_2 = 'register_song_2'
 SONG_CALLBACK_3 = 'register_song_3'
+FEEDBACK_CALLBACK = 'register_feedback'
 
 class AnswersClass(AbstractSheetAdapter):
     def __init__(self, sheet_name: str, name: str) -> None:
@@ -55,7 +57,8 @@ class AnswersClass(AbstractSheetAdapter):
             (full_df[CONFIRM] != '') |
             (full_df[SONG_QUESTION_1] != '') |
             (full_df[SONG_QUESTION_2] != '') |
-            (full_df[SONG_QUESTION_3] != '')
+            (full_df[SONG_QUESTION_3] != '') |
+            (full_df[FEEDBACK] != '')
         ]
         return valid
     
@@ -116,7 +119,8 @@ class AnswersClass(AbstractSheetAdapter):
             CONFIRM: "",
             SONG_QUESTION_1: "",
             SONG_QUESTION_2: "",
-            SONG_QUESTION_3: ""
+            SONG_QUESTION_3: "",
+            FEEDBACK: ""
         }, index=[0])
         if self.valid.empty:
             self.valid = tmp_df
@@ -226,6 +230,8 @@ class AnswersClass(AbstractSheetAdapter):
                 self.write_answer(SONG_QUESTION_2, chat_id, value, app)
             if row.callback_data == SONG_CALLBACK_3:
                 self.write_answer(SONG_QUESTION_3, chat_id, value, app)
+            if row.callback_data == FEEDBACK_CALLBACK:
+                self.write_answer(FEEDBACK, chat_id, value, app)
             message_id = row.message_id
         self.status = self.status.drop(self.status[self.status.chat_id == chat_id].index)
         Log.info(f"Deleted from {self.name} status df:")
